@@ -1,0 +1,46 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User{
+  id_user Int @id @default(autoincrement())
+  nama_user String
+  username String @unique
+  password String
+  role Role
+  peminjaman peminjaman[]
+}
+model inventory {
+  id_barang Int @id @default(autoincrement())
+  nama_barang String
+  category String
+  location String
+  quantity Int
+  peminjaman peminjaman[]
+}
+model peminjaman {
+  id_peminjaman Int @id @default(autoincrement())
+  id_user Int
+  id_barang Int
+  qty Int
+  borrow_date DateTime @db.Date
+  return_date DateTime @db.Date
+  status Status @default(dipinjam)
+  barang inventory @relation(fields: [id_barang], references: [id_barang])
+  user User @relation(fields: [id_user], references: [id_user])
+}
+
+enum Status{
+  kembali
+  dipinjam
+}
+
+enum Role{
+  admin
+  member
+}
